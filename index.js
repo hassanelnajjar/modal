@@ -1,35 +1,54 @@
-console.log('hello');
-
-const disableBodyScroll = () => {
+const disableBodyScrollInOverlayRoot = () => {
   document.body.style.overflow = 'hidden';
 };
 
-const enableBodyScroll = () => {
+const enableBodyScrollInOverlayRoot = () => {
   document.body.style.overflow = 'auto';
 };
 
-const hideModal = () => {
-  enableBodyScroll();
-  document.querySelector('.backdrop').style.display = 'none';
-  document.querySelector('.modal').style.display = 'none';
+// these classes are defined just to select the elements without styles
+// class : .overlay-root .top-menu-modal
+// class : .backdrop-overlay
+// class : .modal
+// class : .close-button-class
+
+const hideAllModals = () => {
+  enableBodyScrollInOverlayRoot();
+  document
+    .querySelectorAll('.overlay-root')
+    .forEach((v) => (v.style.visibility = 'hidden'));
 };
 
-const showModal = () => {
-  disableBodyScroll();
-  document.querySelector('.backdrop').style.display = 'block';
-  document.querySelector('.modal').style.display = 'flex';
+const hideOverlayRootByNodalName = (modal = '') => {
+  const modalClass = '.' + modal;
+  enableBodyScrollInOverlayRoot();
+  document
+    .querySelectorAll(modalClass)
+    .forEach((v) => (v.style.visibility = 'hidden'));
+  hideAllModals();
 };
 
-function handleBackdropClick(event) {
+const showOverlayRootByModalName = (modal = '') => {
+  const modalClass = '.' + modal;
+  if (!modal) return;
+  hideAllModals();
+  disableBodyScrollInOverlayRoot();
+  document.querySelector(modalClass).style.visibility = 'visible'; // root
+  document.querySelector(modalClass + ' .backdrop-overlay').style.display =
+    'block';
+  document.querySelector(modalClass + ' .overlay-modal').style.display = 'flex';
+};
+
+function handleBackdropClickInOverlayRoot(event) {
   if (event.target === event.currentTarget) {
-    hideModal();
+    hideModal('.overlay-root');
   }
 }
 
 document
-  .querySelector('.backdrop')
-  .addEventListener('click', handleBackdropClick);
+  .querySelectorAll('.backdrop-overlay')
+  .forEach((v) => v.addEventListener('click', hideAllModals));
 
-document.querySelector('.button').addEventListener('click', showModal);
-
-document.querySelector('.icon').addEventListener('click', hideModal);
+document
+  .querySelectorAll('.close-button-class')
+  .forEach((v) => v.addEventListener('click', hideAllModals));
