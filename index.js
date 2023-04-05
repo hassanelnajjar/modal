@@ -19,7 +19,7 @@ const hideAllModals = () => {
     .forEach((v) => (v.style.visibility = 'hidden'));
 };
 
-const hideOverlayRootByNodalName = (modal = '') => {
+const closeOverlayRootByNodalName = (modal = '') => {
   const modalClass = '.' + modal;
   enableBodyScrollInOverlayRoot();
   document
